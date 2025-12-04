@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sportify - Premium Sports Gear for Elite Athletes</title>
+    <meta name="description" content="Elevate your performance with premium sports equipment. No limits, just excellence. Discover our collections today. Prices in PKR.">
+    <!-- SEO Optimized -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- JS for interactions -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- EmailJS for sending emails -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+    <!-- Professional Dark Navy Navigation with Cart and Login Status -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                Sportify
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#about">Why Sportify</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#enterprise">Enterprise</a></li>
+                <li><a href="#collections">Collections</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search Gear..." class="search-input">
+                </div>
+                <div class="cart-icon" onclick="openCartModal()">
+                    🛒 <span class="cart-badge" id="cart-badge">0</span>
+                </div>
+                <div id="auth-section">
+                    <button id="login-btn" class="login-btn" onclick="showLoginModal()">Login</button>
+                    <button id="signup-btn" class="signup-btn" onclick="showSignupModal()" style="display: none;">Sign Up</button>
+                    <button id="logout-btn" class="logout-btn" onclick="logout()" style="display: none;">Logout</button>
+                    <span id="user-welcome" style="color: #4CAF50; font-weight: 500; display: none;"></span>
+                </div>
+            </div>
+            <!-- Mobile Hamburger -->
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAuthModal()">&times;</span>
+            <h2>Elite Login</h2>
+            <form id="login-form">
+                <input type="email" id="login-email" placeholder="Email Address" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button type="submit">Sign In</button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem;">New here? <a href="#" onclick="switchToSignup()">Sign Up</a></p>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signup-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAuthModal()">&times;</span>
+            <h2>Join the Elite</h2>
+            <form id="signup-form">
+                <input type="text" id="signup-name" placeholder="Full Name" required>
+                <input type="email" id="signup-email" placeholder="Email Address" required>
+                <input type="password" id="signup-password" placeholder="Password" required>
+                <button type="submit">Create Account</button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem;">Already elite? <a href="#" onclick="switchToLogin()">Login</a></p>
+        </div>
+    </div>
+
+    <!-- Hero Section: Clean Text with CTA -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="hero-subtitle">Elevate your game with gear as unique as your drive. No compromises, just peak performance.</h1>
+            <p class="hero-desc">Craft your athletic legacy with our drag-and-drop customizer and AI-powered recommendations to bring your vision to the field.</p>
+            <button class="start-btn-large" onclick="scrollToSection('collections')">Start Free</button>
+        </div>
+        
+        <div class="hero-overlay"></div>
+    </section>
+
+    <!-- Collage Hero: Sports Photo Book Opening with Overlay Text -->
+    <section id="collage" class="collage-section">
+        <div class="collage-book">
+            <div class="photo-collage">
+                <!-- Flipping/Animated Photo Cards -->
+                <div class="photo-card flip-card" style="--delay: 0s;">
+                    <div class="photo-front">
+                        <img src="https://source.unsplash.com/300x400/?athlete,running" alt="Runner in motion">
+                    </div>
+                    <div class="photo-back">
+                        <h3>Endurance Unleashed</h3>
+                    </div>
+                </div>
+                <div class="photo-card flip-card" style="--delay: 0.2s;">
+                    <div class="photo-front">
+                        <img src="https://source.unsplash.com/300x400/?tennis,professional" alt="Tennis pro">
+                    </div>
+                    <div class="photo-back">
+                        <h3>Precision Strikes</h3>
+                    </div>
+                </div>
+                <div class="photo-card flip-card" style="--delay: 0.4s;">
+                    <div class="photo-front">
+                        <img src="https://source.unsplash.com/300x400/?golf,elite" alt="Golfer swinging">
+                    </div>
+                    <div class="photo-back">
+                        <h3>Elegant Power</h3>
+                    </div>
+                </div>
+                <div class="photo-card flip-card" style="--delay: 0.6s;">
+                    <div class="photo-front">
+                        <img src="https://source.unsplash.com/300x400/?gym,fitness" alt="Weightlifter">
+                    </div>
+                    <div class="photo-back">
+                        <h3>Strength Forged</h3>
+                    </div>
+                </div>
+                <div class="photo-card flip-card" style="--delay: 0.8s;">
+                    <div class="photo-front">
+                        <img src="https://source.unsplash.com/300x400/?soccer,action" alt="Soccer player">
+                    </div>
+                    <div class="photo-back">
+                        <h3>Dynamic Agility</h3>
+                    </div>
+                </div>
+                <div class="photo-card flip-card" style="--delay: 1s;">
+                    <div class="photo-front">
+                        <img src="https://source.unsplash.com/300x400/?basketball,dunk" alt="Basketball dunk">
+                    </div>
+                    <div class="photo-back">
+                        <h3>Vertical Leap</h3>
+                    </div>
+                </div>
+                <!-- More photos for collage effect -->
+                <div class="photo-card static" style="--delay: 0s;">
+                    <img src="https://source.unsplash.com/250x300/?cricket,bat" alt="Cricket bat">
+                </div>
+                <div class="photo-card static" style="--delay: 0.3s;">
+                    <img src="https://source.unsplash.com/250x300/?yoga,pose" alt="Yoga pose">
+                </div>
+                <div class="photo-card static" style="--delay: 0.5s;">
+                    <img src="https://source.unsplash.com/250x300/?boxing,gloves" alt="Boxing gloves">
+                </div>
+            </div>
+            <div class="collage-overlay">
+                <h2 class="collage-title">OF ATHLETIC</h2>
+                <h2 class="collage-subtitle">JOURNEYS</h2>
+            </div>
+        </div>
+        <button class="cta-btn" onclick="scrollToSection('products')">Discover Gear</button>
+    </section>
+
+    <!-- Collections Grid: Rotating Cards -->
+    <section id="collections" class="section">
+        <h2 class="section-title">Elite Collections</h2>
+        <div class="collections-grid">
+            <!-- JS Populated -->
+        </div>
+    </section>
+
+    <!-- Featured Products: Flexbox Grid -->
+    <section id="products" class="section">
+        <h2 class="section-title">Featured Masterpieces</h2>
+        <div class="filters">
+            <input type="text" id="search-input" placeholder="Search Elite Gear...">
+            <select id="category-filter">
+                <option value="">All Sports</option>
+                <!-- JS Populate -->
+            </select>
+            <select id="sort-filter">
+                <option value="newest">New Arrivals</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+            </select>
+        </div>
+        <div class="products-grid" id="products-grid">
+            <!-- JS Populated -->
+        </div>
+    </section>
+
+    <!-- VIP Section -->
+    <section id="vvip" class="section vip-spotlight">
+        <h2 class="section-title">VVIP Exclusives</h2>
+        <div class="vip-content">
+            <p>Limited editions for the unparalleled.</p>
+            <button class="access-btn">Unlock Access</button>
+        </div>
+    </section>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCartModal()">&times;</span>
+            <h2>Your Elite Cart</h2>
+            <div id="cart-items"></div>
+            <div class="cart-total">
+                <strong>Total: PKR <span id="cart-total">0</span></strong>
+            </div>
+            <button class="proceed-btn" onclick="proceedToCheckout()" id="proceed-btn" style="display: none;">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCheckoutModal()">&times;</span>
+            <h2>Secure Checkout</h2>
+            <form id="checkout-form">
+                <input type="text" name="name" placeholder="Full Name" required>
+                <input type="email" name="email" placeholder="Email Address" required>
+                <input type="tel" name="phone" placeholder="Phone Number" required>
+                <textarea name="address" placeholder="Shipping Address" required></textarea>
+                <input type="text" name="payment" placeholder="Payment Method (e.g., Cash on Delivery)" required>
+                <button type="submit">Place Order</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Product Detail Modal -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeProductModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Contact -->
+    <section id="contact" class="contact-section">
+        <div class="contact-container">
+            <h2 class="section-title">Connect Elite</h2>
+            <div class="contact-links">
+                <a href="https://wa.me/923013631261?text=Elevate%20my%20game%20with%20Sportify." class="contact-link">
+                    <div class="contact-icon whatsapp"></div>
+                    <span>WhatsApp</span>
+                </a>
+                <a href="https://www.instagram.com/sportify_cart" class="contact-link">
+                    <div class="contact-icon instagram"></div>
+                    <span>Instagram</span>
+                </a>
+            </div>
+            <form id="newsletter-form" class="newsletter">
+                <input type="email" placeholder="Your Elite Email" required>
+                <button type="submit">Join VVIP</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Sportify. Peak Performance Awaits. Prices in PKR.</p>
+        <div class="social">
+            <a href="#whatsapp">WhatsApp</a>
+            <a href="#instagram">Instagram</a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
