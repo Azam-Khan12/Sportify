@@ -32,7 +32,7 @@ const LOCAL_IMAGE_FALLBACKS = [
     { keywords: ['shoe', 'sneaker', 'red tape'], path: 'images/Red-Tape.jpeg' },
 
     // Balls
-    { keywords: ['white ball', 'gray nicolls ball'], path: 'images\White-Gray-Nicolls-Hard-Ball.jpeg' }
+    { keywords: ['white ball', 'gray nicolls ball'], path: 'images/White-Gray-Nicolls-Hard-Ball.jpeg' }
 ];
 
 function getLocalProductImage(name = '') {
@@ -554,15 +554,34 @@ async function loadCategories() {
 
     elements.collectionsGrid.innerHTML = '';
     data.slice(0, 3).forEach((cat, index) => {
+        // Map categories to specific images
         let imgPath = `https://source.unsplash.com/400x500/?${cat.slug},sports`;
+        let displayName = cat.name;
+        
+        const catNameLower = (cat.name || '').toLowerCase();
+        const catSlugLower = (cat.slug || '').toLowerCase();
+        
+        // Check for cricket
+        if (catNameLower.includes('cricket') || catSlugLower.includes('cricket')) {
+            imgPath = 'images/cricket-elite.jpg';
+        }
+        // Check for tennis
+        else if (catNameLower.includes('tennis') || catSlugLower.includes('tennis')) {
+            imgPath = 'images/Tennis-mastery.jpg';
+        }
+        // Third category - make it Protective Gears
+        else if (index === 2 || catNameLower.includes('gym') || catNameLower.includes('fitness') || catSlugLower.includes('gym') || catSlugLower.includes('fitness')) {
+            imgPath = 'images/Protective Gears.jpg';
+            displayName = 'Protective Gears';
+        }
 
         const card = document.createElement('div');
         card.className = 'collection-card rotate-card';
         card.style.animationDelay = `${index * 0.2}s`;
         card.innerHTML = `
             <div class="card-front">
-                <img src="${imgPath}" alt="${cat.name}" loading="lazy">
-                <h3>${cat.name}</h3>
+                <img src="${imgPath}" alt="${displayName}" loading="lazy">
+                <h3>${displayName}</h3>
             </div>
             <div class="card-back">
                 <p>${cat.description || 'Premium gear for peak performance.'}</p>
@@ -613,13 +632,48 @@ async function loadProducts(filters = {}, sort = 'newest') {
 function renderProducts(products) {
     if (!elements.productsGrid) return;
     elements.productsGrid.innerHTML = '';
-    products.forEach(product => {
-        const primaryImg = resolveProductImage(product, '300x400');
+    
+    // Local images array for random assignment
+    const localImages = [
+        'images/CA-balls.jpg',
+        'images/Tennis-Bat.jpg',
+        'images/Adidas-tennis-ball.jpeg',
+        'images/GRAY-Nicolls-Hard-Ball-Gloves.jpeg',
+        'images/MRF-Hard-Ball-Gloves.jpeg',
+        'images/Keeper-Gloves.jpeg',
+        'images/Cricket-Pads.jpg',
+        'images/Cricket-Thigh-Support.jpeg',
+        'images/Star-Helmet.jpeg',
+        'images/Bat-Grips.jpeg',
+        'images/Red-Tape.jpeg',
+        'images/White-Gray-Nicolls-Hard-Ball.jpeg',
+        'images/Full-KitBag.jpg'
+    ];
+    
+    // Always show 10 products
+    const productsToShow = products && products.length > 0 ? products : [];
+    const totalToShow = 10;
+    
+    for (let i = 0; i < totalToShow; i++) {
+        const isRealProduct = i < productsToShow.length;
+        const product = isRealProduct ? productsToShow[i] : {
+            id: `dummy-${i}`,
+            name: `Elite Product ${i + 1}`,
+            brand: 'Sportify',
+            description: 'Premium quality sports gear for elite athletes.',
+            price_pkr: Math.floor(Math.random() * 50000) + 5000,
+            stock_quantity: Math.floor(Math.random() * 10)
+        };
+        
+        // Always use local image - cycle through them
+        const primaryImg = localImages[i % localImages.length];
         
         const card = document.createElement('div');
         card.className = 'product-card';
-        card.onclick = () => openProductModal(product.id);
-        card.style.cursor = 'pointer';
+        if (isRealProduct) {
+            card.onclick = () => openProductModal(product.id);
+            card.style.cursor = 'pointer';
+        }
         card.innerHTML = `
             <img src="${primaryImg}" alt="${product.name}" loading="lazy">
             <h3>${product.name}</h3>
@@ -627,10 +681,10 @@ function renderProducts(products) {
             <p>${product.description?.slice(0, 80)}...</p>
             <span class="price">PKR ${product.price_pkr.toLocaleString()}</span>
             ${product.stock_quantity === 0 ? '<span class="out-of-stock">Limited Edition</span>' : ''}
-            <button class="add-btn" onclick="event.stopPropagation(); addToCart('${product.id}')">Add to Cart</button>
+            <button class="add-btn" onclick="event.stopPropagation(); ${isRealProduct ? `addToCart('${product.id}')` : 'alert(\'Product coming soon!\')'}">Add to Cart</button>
         `;
         elements.productsGrid.appendChild(card);
-    });
+    }
 }
 
 function filterByCategory(slug) {
